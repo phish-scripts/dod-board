@@ -1,5 +1,9 @@
-import Image from "next/image";
+import { supabase } from "../supabaseSchema/supabaseObject";
 
 export default function Home() {
-  return 1;
+  const m = async () => {
+    await supabase.from("applications").select("*");
+  };
+  console.log("hello world");
+  return console.log(m);
 }
