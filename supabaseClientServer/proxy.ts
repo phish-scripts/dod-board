@@ -9,8 +9,10 @@ export async function updateSession(request: NextRequest) {
     request,
 
   })
+
   // With Fluid compute, don't put this client in a global environment
-    // variable. Always create a new one on each request.
+
+  // variable. Always create a new one on each request.
 
   const supabase = createServerClient(
 
@@ -27,7 +29,7 @@ export async function updateSession(request: NextRequest) {
           return request.cookies.getAll()
 
         },
-
+        // setting cookies. then, we store as a response, and send it to the user
         setAll(cookiesToSet) {
 
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
