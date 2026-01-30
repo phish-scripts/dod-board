@@ -1,7 +1,8 @@
 # phish.dev
-# this is a 'crawler' made using beautiful soup 4, and requests. 
+# scrapes the job details from each link found
 
 import requests
+from crawl_for_jobs import crawl_for_jobs
 
 # formatting the url so we only need /jobs 
 import re
