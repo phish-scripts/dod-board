@@ -1,5 +1,6 @@
 from crawl_for_jobs import crawl_for_jobs
 import time
+import config
 
 
 
@@ -8,7 +9,12 @@ header = {
     'User-Agent' : "Moxilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
 }
 
-job_queue = crawl_for_jobs(search_url, target=50)
+job_queue = crawl_for_jobs(
+    url=config.BASE_SEARCH_URL, 
+    keyword=config.search_keyword, 
+    headers=config.HEADERS, 
+    target=config.target_jobs
+)
 
 job_data = []
 
@@ -16,5 +22,5 @@ while (job_queue):
     url = job_queue.pop()
     print(url)
     time.sleep(1)
-    
+
 
