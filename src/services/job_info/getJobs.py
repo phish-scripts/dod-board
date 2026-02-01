@@ -19,6 +19,7 @@ def getJobLinks(keyword):
     limit = 100
     driver = webdriver.Chrome(options = chrome_options)
     job_links = set()
+    print("Fetching jobs...")
     try:
         while(len(job_links) < limit):
             # each loop, the link should change
@@ -55,15 +56,16 @@ def getJobLinks(keyword):
 
             # advancing to next page, page number will be updated in the link    
             page_number += 1 
-            
-        
+           
+        print("finished fetching jobs...")
         return job_links
     
     finally:
         driver.quit()
+    
 
-# scraping for all the 'a' elements, and then sees if theres an 'href'/link.
-results = getJobLinks("Software")
+
+
 
 
 
