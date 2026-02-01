@@ -41,10 +41,12 @@ def getJobLinks(keyword):
                     # making sure that this link doesnt sneak its way into job_links
                     if 'job-announcement/closing-types' not in var_href:
                         new_url = "https://www.usajobs.gov" + var_href
+                        print("------------------")
                         print(f"job found: {new_url}")
                         # checking to make sure that the new url isnt already in job_links, but i think set() already does that?
                         if new_url not in job_links:
                             print(f"Putting {new_url} in job_links")
+                            print("------------------------")
                             job_links.add(new_url)
                             found_on_page += 1
                     if len(job_links) >= limit:
@@ -58,6 +60,7 @@ def getJobLinks(keyword):
             page_number += 1 
            
         print("finished fetching jobs...")
+        print("total jobs found: ", len(job_links))
         return job_links
     
     finally:
