@@ -53,7 +53,7 @@ def getJobLinks(keyword):
 
     # scraping for all the 'a' elements, and then sees if theres an 'href'/link.
 results = getJobLinks("Software")
-print(results)
+
 
 
 
