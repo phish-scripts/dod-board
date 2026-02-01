@@ -13,7 +13,7 @@ def crawl_for_jobs(url, keyword, headers, target=100):
 
     while (len(job_links) <  target):
         query = { "k": keyword, "p": page_number}
-        response = requests.get(url, headers=header)
+        response = requests.get(url, headers=headers)
         soup = BeautifulSoup(response.text, 'html.parser')
 
         # scrapes ALL the links on the page (starting at 1)
@@ -26,7 +26,7 @@ def crawl_for_jobs(url, keyword, headers, target=100):
                 href = "https://www.usajobs.gov" + href
             job_links.add(href)
             # making sure we dont exceed 100. Might increase count later
-            if (len(job_links) >= target_count):
+            if (len(job_links) >= target):
                 break
         page_number += 1
 
