@@ -17,34 +17,37 @@ def getJobLinks(keyword):
     # change limit as needed
     usaJobLink = f"https://www.usajobs.gov/Search/Results?k={keyword}&p={page_number}"
     limit = 100
-    driver = webdriver.Chrome()
+    driver = webdriver.Chrome(options = chrome_options)
     page_number = 1
+    job_links = set()
     try:
-        driver.get(usaJobLink)
-        time.sleep(1)
+        while(len(job_links < limit)):
+            driver.get(usaJobLink)
+            print(f"scraping page {page_number}...")
+            time.sleep(1)
 
-        page = driver.page_source
-        soup = BeautifulSoup(page, "html.parser")
+            page = driver.page_source
+            soup = BeautifulSoup(page, "html.parser")
 
-        job_links = set()
+            job_links = set()
 
-        # collecting all 'a' elements (CALLING ALL AUTOBOTS)
-        collected_a_elements = soup.find_all('a', href=True)
-        for link in collected_a_elements:
-            var_href = link['href']
-            # checks to see if the link is actually a job link
-            if "/job" in var_href:
-                new_url = "https://www.usajobs.gov" + var_href
-                print(f"job found: {new_url}")
-                job_links.add(new_url)
-            if (len(collected_a_elements) == 0): 
-                page_number += 1
-            else:
-                collected_a_elements.pop(0)
+            # collecting all 'a' elements (CALLING ALL AUTOBOTS)
+            collected_a_elements = soup.find_all('a', href=True)
+            for link in collected_a_elements:
+                var_href = link['href']
+                # checks to see if the link is actually a job link
+                if "/job" in var_href:
+                    new_url = "https://www.usajobs.gov" + var_href
+                    print(f"job found: {new_url}")
+                    job_links.add(new_url)
+                if (len(collected_a_elements) == 0): 
+                    page_number += 1
+                else:
+                    collected_a_elements.pop(0)
             
             
-            if len(job_links) >= limit:
-                break
+                if len(job_links) >= limit:
+                    break
 
         return job_links
     
