@@ -15,46 +15,54 @@ driver = webdriver.Chrome(options=chrome_options)
  
 def getJobLinks(keyword):
     # change limit as needed
-    usaJobLink = f"https://www.usajobs.gov/Search/Results?k={keyword}&p={page_number}"
+    page_number = 1
     limit = 100
     driver = webdriver.Chrome(options = chrome_options)
-    page_number = 1
     job_links = set()
     try:
-        while(len(job_links < limit)):
+        while(len(job_links) < limit):
+            # each loop, the link should change
+            usaJobLink = f"https://www.usajobs.gov/Search/Results?k={keyword}&p={page_number}"
             driver.get(usaJobLink)
+            time.sleep(2)
             print(f"scraping page {page_number}...")
-            time.sleep(1)
 
             page = driver.page_source
             soup = BeautifulSoup(page, "html.parser")
 
-            job_links = set()
-
             # collecting all 'a' elements (CALLING ALL AUTOBOTS)
+            found_on_page = 0
             collected_a_elements = soup.find_all('a', href=True)
             for link in collected_a_elements:
                 var_href = link['href']
                 # checks to see if the link is actually a job link
                 if "/job" in var_href:
-                    new_url = "https://www.usajobs.gov" + var_href
-                    print(f"job found: {new_url}")
-                    job_links.add(new_url)
-                if (len(collected_a_elements) == 0): 
-                    page_number += 1
-                else:
-                    collected_a_elements.pop(0)
+                    # making sure that this link doesnt sneak its way into job_links
+                    if 'job-announcement/closing-types' not in var_href:
+                        new_url = "https://www.usajobs.gov" + var_href
+                        print(f"job found: {new_url}")
+                        # checking to make sure that the new url isnt already in job_links, but i think set() already does that?
+                        if new_url not in job_links:
+                            print(f"Putting {new_url} in job_links")
+                            job_links.add(new_url)
+                            found_on_page += 1
+                    if len(job_links) >= limit:
+                        break
             
-            
-                if len(job_links) >= limit:
-                    break
+            if found_on_page == 0:
+                print("No more jobs found")
+                break
 
+            # advancing to next page, page number will be updated in the link    
+            page_number += 1 
+            
+        
         return job_links
     
     finally:
         driver.quit()
 
-    # scraping for all the 'a' elements, and then sees if theres an 'href'/link.
+# scraping for all the 'a' elements, and then sees if theres an 'href'/link.
 results = getJobLinks("Software")
 print(results)
 
