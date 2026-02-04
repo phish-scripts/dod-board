@@ -18,7 +18,6 @@ driver = webdriver.Chrome(options=chrome_options)
 
 ban_list = ["https://www.usajobs.govhttps://help.usajobs.gov/faq/job-announcement/remote"]
 
-
 def getJobLinks(keyword):
     # change limit as needed
     page_number = 1
