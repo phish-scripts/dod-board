@@ -8,20 +8,24 @@ from selenium import webdriver
 from selenium_stealth import stealth
 import random
 
+from supabase_client import supabase_client
+
+
 from selenium.webdriver.chrome.options import Options
 
 # so there isnt a window thats opened each time
-chrome_options = Options()
-chrome_options.add_argument("--headless") 
-driver = webdriver.Chrome(options=chrome_options)
+
+
+def getJobLinks(keyword, supabase_client, scrape_limit):
+
+    chrome_options = Options()
+    chrome_options.add_argument("--headless") 
+    driver = webdriver.Chrome(options=chrome_options)
  
 
-ban_list = ["https://www.usajobs.govhttps://help.usajobs.gov/faq/job-announcement/remote"]
-
-def getJobLinks(keyword):
+    ban_list = ["https://www.usajobs.govhttps://help.usajobs.gov/faq/job-announcement/remote"]
     # change limit as needed
     page_number = 1
-    limit = 5
     driver = webdriver.Chrome(options = chrome_options)
 
     # applying stealth so it doesn't get nailed
@@ -39,7 +43,7 @@ def getJobLinks(keyword):
 
     print("Fetching jobs...")
     try:
-        while(len(job_links) < limit):
+        while(len(job_links) < scrape_limit):
             # each loop, the link should change
             usaJobLink = f"https://www.usajobs.gov/Search/Results?k={keyword}&p={page_number}"
             driver.get(usaJobLink)
@@ -56,6 +60,7 @@ def getJobLinks(keyword):
 
             # collecting all 'a' elements (CALLING ALL AUTOBOTS)
             found_on_page = 0
+            links_on_this_page = set()
             collected_a_elements = soup.find_all('a', href=True)
             for link in collected_a_elements:
                 var_href = link['href']
@@ -67,13 +72,44 @@ def getJobLinks(keyword):
                         # making sure if the URL needs to be cleaned
                         new_url = var_href if var_href.startswith('http') else "https://www.usajobs.gov" + var_href
                         print(f"job found: {new_url}")
+
+
                         # checking to make sure that the new url isnt already in job_links, but i think set() already does that?
                         if new_url not in job_links:
-                            print(f"Putting {new_url} in job_links")
-                            job_links.add(new_url)
+                            print(f"Putting {new_url} in links_on_this_page")
+                            links_on_this_page.add(new_url)
                             found_on_page += 1
-                    if len(job_links) >= limit:
-                        break
+            print(f"done collecting elements on page #{page_number}...")
+
+            print(" ")
+            print(" ")
+            time.sleep(.5)
+            # checking Database if its a duplicate
+            print("getting response from supabase...")
+            response = (
+                supabase_client.table("usa_jobs")
+                .select("job_link")
+                .in_("job_link", links_on_this_page)
+                .execute()
+            )
+
+            existing_links = {
+                # creating list of links already in the DB
+                row["job_link"] for row in response.data
+            }
+
+            for link in links_on_this_page:
+                if link not in existing_links:
+                    print(f"adding new link to job_links: {link}")
+                    job_links.add(link)
+                else: 
+                    print(f"Skipping {link}, it is already in the database!")
+                
+                if len(job_links) >= scrape_limit:
+                    print(f"The limit of {scrape_limit} has been hit! The process of adding links to job_links is being terminated....")
+                    break 
+
+
             
             if found_on_page == 0:
                 print("No more jobs found")
@@ -82,7 +118,8 @@ def getJobLinks(keyword):
             # advancing to next page, page number will be updated in the link    
             page_number += 1 
            
-        print("finished fetching jobs...")
+        print(" ")
+        print("Finished fetching jobs...")
         return job_links
     
     finally:

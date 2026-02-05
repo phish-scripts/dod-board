@@ -1,6 +1,11 @@
 # phish.dev
 # this script scrapes each link given from getJobs.py, the crawler
 
+'''
+Selenium is used to open a chrome instance that will be scraped
+
+'''
+
 
 import json
 import time
@@ -9,17 +14,15 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import re
 import random
+from supabase_client import supabase_client
 
 from selenium_stealth import stealth
 
 from getJobs import getJobLinks
 
-def job_details(keyword):
-    job_list = set()
-    job_list = getJobLinks(keyword)
+job_list = set()
 
-    length_of_job_list = len(job_list)
-    counter = 0
+def job_details(job_list):
     # remove GUI, dont need an actual chrome tab open each time
     chrome_options = Options()
     chrome_options.add_argument("--headless")
@@ -28,6 +31,11 @@ def job_details(keyword):
     chrome_options.add_experimental_option('useAutomationExtension', False)
     
     driver = webdriver.Chrome(options=chrome_options)
+
+    
+
+    length_of_job_list = len(job_list)
+    counter = 0
 
     # Apply Stealth Settings
     stealth(driver,
@@ -50,12 +58,6 @@ def job_details(keyword):
         time.sleep(random.uniform(3.5, 6.2))
 
         page = driver.page_source
-
-        # lesson learned
-        
-
-
-
         soup = BeautifulSoup(page, "html.parser")
 
         # salary
@@ -92,15 +94,15 @@ def job_details(keyword):
         time.sleep(random.uniform(3.5, 6.2))
         
 
-            # returning this job_data
+        # returning this job_data
         job_data = {
-            "link": job_link,
+            "job_link": job_link,
             "job_title": soup.find("h1").get_text(strip=True),
-            "where": soup.find("div", class_="uppercase usajobs-joa-banner__dept").get_text(strip=True),
-            "Salary": salary_info if salary_info else "N/A",
-            "Location": location_list if location_list else "N/A",
-            "Remote": remote_value if remote_value else "N/A" ,
-            "Pay Scale & Grade": pay_scale
+            "description": soup.find("div", class_="uppercase usajobs-joa-banner__dept").get_text(strip=True),
+            "location": location_list if location_list else "N/A",
+            "salary": salary_info if salary_info else "N/A",
+            "remote_status": remote_value if remote_value else "N/A" ,
+            "pay_scale_grade": pay_scale
         }
         time.sleep(random.uniform(3.5, 6.2))
 
@@ -118,6 +120,8 @@ def job_details(keyword):
     
         if counter >= length_of_job_list:
             driver.close()
+        
+        json_job_list = json.dumps(job_details_list)
     return job_details_list
         
 
