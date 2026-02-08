@@ -21,7 +21,7 @@ from supabase_client import supabase_client
 print("Executing driver script...")
 
 def main(supabase_client, scrape_limit):
-    keywords = ["Software"]
+    keywords = ["Software", "IT", "Engineering"]
 
     for keyword in keywords:
         print("-----------------------------------------------------------")
