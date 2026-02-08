@@ -48,6 +48,4 @@ def main(supabase_client, scrape_limit):
 
     print("Finished scraping for all keywords...")
 
-if __name__ == "__main__":
-    main(supabase_client, 5)
     
