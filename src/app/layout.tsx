@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "dod.",
+  title: ".dod",
   description: "created by phish.dev/Samir & Marcos. ",
 };
 
