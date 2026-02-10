@@ -3,6 +3,7 @@ from driver import main
 from supabase_client import supabase_client
 from flask_cors import CORS, cross_origin
 
+
 '''
 Flask endpoint that express.js will communicate with
 This is a microservice
@@ -38,8 +39,9 @@ def run_pipeline(scrape_limit):
     print("Attempting to run pipeline from Flask pipeline...")
     try:
         print("running pipeline from Flask endpoint...")
-        result = main(supabase_client, scrape_limit)
-        return jsonify({"status": "success", "data": result}), 200
+        json_result_container = []
+        result = main(supabase_client, scrape_limit, json_result_container)
+        return jsonify({"status": "success", "data": json_result_container}), 200
     except Exception as error:
         return jsonify({"status": "error", "message": str(error)}), 500
 

@@ -14,13 +14,13 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from getJobs import getJobLinks
-from scrapedJobDetails import job_details
+from scrapedJobDetails import job_details, stored_json_result
 
 from supabase_client import supabase_client
 
 print("Executing driver script...")
 
-def main(supabase_client, scrape_limit):
+def main(supabase_client, scrape_limit, json_result_container):
     keywords = ["Software", "IT", "Engineering"]
 
     for keyword in keywords:
@@ -45,7 +45,9 @@ def main(supabase_client, scrape_limit):
                 print(f"Error upserting data to Supabase: {error}")
         print(f"Finished upserting data for keyword: {keyword}")
     
-
+    json_result_container = stored_json_result
+    print(json_result_container)
+    
     print("Finished scraping for all keywords...")
 
     

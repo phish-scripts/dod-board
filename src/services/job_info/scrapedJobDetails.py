@@ -22,6 +22,8 @@ from getJobs import getJobLinks
 
 job_list = set()
 
+stored_json_result = []
+
 def job_details(job_list):
     # remove GUI, dont need an actual chrome tab open each time
     chrome_options = Options()
@@ -122,9 +124,9 @@ def job_details(job_list):
             driver.close()
         
         json_job_list = json.dumps(job_details_list)
+        stored_json_result.append(json_job_list)
     return job_details_list
-        
 
-
-
-
+def return_json(stored_json_result):
+    print("fetching json...")
+    return stored_json_result
