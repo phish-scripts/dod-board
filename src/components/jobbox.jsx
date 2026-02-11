@@ -1,17 +1,10 @@
 import React from 'react'
 
-const jobbox = () => {
-    const defaults = {
-
-
-
-        
-    }
-
-
+const JobCard = ({job_details}) => {
+    
   return (
-    <div>jobbox</div>
+    <div></div>
   )
 }
 
-export default jobbox
+export default JobCard
