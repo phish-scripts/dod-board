@@ -124,13 +124,3 @@ def getJobLinks(keyword, supabase_client, scrape_limit):
     
     finally:
         driver.quit()
-    
-
-
-
-
-
-
-
-
-
