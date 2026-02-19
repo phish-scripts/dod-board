@@ -11,8 +11,8 @@ interface Job {
   job_title: string;
   location?: string[];
   salary?: string;
-  remote_status: string;
-  pay_scale_grade: string;
+  remote_status?: string;
+  pay_scale_grade?: string;
   description?: string;
 }
 
