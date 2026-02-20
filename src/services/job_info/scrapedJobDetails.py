@@ -14,6 +14,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import re
 import random
+from datetime import datetime
 
 
 from selenium_stealth import stealth
@@ -72,6 +73,8 @@ def job_details(job_list):
         date_array = []
         start_date = ""
         end_date = ""
+
+        
         date_posted = soup.find('div', string=lambda text: "Open & closing dates" in text)
         if date_posted:
             date = date_posted.find_next_sibling('div').get_text(strip=True)
@@ -79,13 +82,20 @@ def job_details(job_list):
             date_array = date.split("to")
             start_date = date_array[0]
             end_date=date_array[1]
-            end_date.lstrip()
-            start_date.strip()
+            end_date =  end_date.lstrip()
+            start_date = start_date.strip()
             
             time.sleep(1)
         
         print(f"start date: {start_date}")
         print(f"end date: {end_date}")
+
+        # converting the date for supabase to store
+        start_date_object = datetime.strptime(start_date, ("%m/%d/%Y"))
+        end_date_object = datetime.strptime(end_date, ("m/%d/%Y"))
+
+        start_date = start_date_object.date().isoformat()
+        end_date = end_date_object.date().isoformat()
             
 
 
@@ -124,8 +134,8 @@ def job_details(job_list):
             "salary": salary_info if salary_info else "N/A",
             "remote_status": remote_value if remote_value else "N/A" ,
             "pay_scale_grade": pay_scale,
-            "start_date": start_date,
-            "end_date": end_date
+            "date_posted": start_date,
+            "date_closed": end_date
         }
         time.sleep(random.uniform(3.5, 6.2))
 
