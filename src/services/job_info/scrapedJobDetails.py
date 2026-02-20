@@ -92,7 +92,7 @@ def job_details(job_list):
 
         # converting the date for supabase to store
         start_date_object = datetime.strptime(start_date, ("%m/%d/%Y"))
-        end_date_object = datetime.strptime(end_date, ("m/%d/%Y"))
+        end_date_object = datetime.strptime(end_date, ("%m/%d/%Y"))
 
         start_date = start_date_object.date().isoformat()
         end_date = end_date_object.date().isoformat()
@@ -107,8 +107,7 @@ def job_details(job_list):
             print(f"Location Info found: {location_list}")
             time.sleep(random.uniform(3.5, 6.2))
             
-            # remote status
-            
+        # remote status    
         remote = soup.find('dt', string=lambda text: "Remote job" in text)
         remote_value = ""
         if remote:
@@ -119,10 +118,26 @@ def job_details(job_list):
 
             time.sleep(random.uniform(1.5, 3.2))
 
-
+        print("Finding Pay Scale")
         pay_scale = soup.find(id="joaPayGrade").get_text(strip=True)
         print(f"Pay Scale found: {pay_scale}")
         time.sleep(random.uniform(3.5, 6.2))
+        print(" ")
+        print(" ")
+
+
+        '''
+        (ad_soup.find("ul",{"class":"Menu"}).
+        find_all("li")[2].find("span", {"class": "value"})
+        '''
+        print("finding qualifications....")
+        description_text = ""
+        description = soup.find("h3", string=lambda text: "Qualifications" in text)
+        if description:
+            description_text = description.find_next_sibling('p').get_text(strip=True)
+            
+            print(f"Qualifications found!: {description_text}")
+
         
 
         # returning this job_data
@@ -134,11 +149,11 @@ def job_details(job_list):
             "salary": salary_info if salary_info else "N/A",
             "remote_status": remote_value if remote_value else "N/A" ,
             "pay_scale_grade": pay_scale,
+            "qualifications": description_text,
             "date_posted": start_date,
             "date_closed": end_date
         }
         time.sleep(random.uniform(3.5, 6.2))
-
         print(f"job data found: {job_data}")
 
         print("Success! Appending job data to job data...")
