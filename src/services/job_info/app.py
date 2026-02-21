@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from driver import main
 from supabase_client import supabase_client
 from flask_cors import CORS, cross_origin
+import schedule
 
 
 '''
@@ -44,6 +45,3 @@ def run_pipeline(scrape_limit):
         return jsonify({"status": "success", "data": json_result_container}), 200
     except Exception as error:
         return jsonify({"status": "error", "message": str(error)}), 500
-
-
-    
