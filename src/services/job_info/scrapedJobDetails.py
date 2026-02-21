@@ -126,17 +126,15 @@ def job_details(job_list):
         print(" ")
 
 
-        '''
-        (ad_soup.find("ul",{"class":"Menu"}).
-        find_all("li")[2].find("span", {"class": "value"})
-        '''
+        # Grabbing Descriptions
         print("finding qualifications....")
-        description_text = ""
-        description = soup.find("h3", string=lambda text: "Qualifications" in text)
+        qualifications = ""
+        description = soup.find("h3", string="Conditions of employment")
         if description:
-            description_text = description.find_next_sibling('p').get_text(strip=True)
-            
-            print(f"Qualifications found!: {description_text}")
+            all_divs = description.find_next_siblings()
+            for sibling in all_divs:
+                qualifications += sibling.get_text(separator=' ', strip=True) + " "
+            print(f"Qualifications found: {qualifications}")
 
         
 
@@ -149,7 +147,7 @@ def job_details(job_list):
             "salary": salary_info if salary_info else "N/A",
             "remote_status": remote_value if remote_value else "N/A" ,
             "pay_scale_grade": pay_scale,
-            "qualifications": description_text,
+            "qualifications": qualifications,
             "date_posted": start_date,
             "date_closed": end_date
         }
