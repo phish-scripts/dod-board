@@ -197,6 +197,45 @@ export type Database = {
           },
         ]
       }
+      usa_jobs: {
+        Row: {
+          date_closed: string | null
+          date_posted: string | null
+          description: string | null
+          job_link: string
+          job_title: string | null
+          location: string | null
+          pay_scale_grade: string | null
+          qualifications: string | null
+          remote_status: string | null
+          salary: string | null
+        }
+        Insert: {
+          date_closed?: string | null
+          date_posted?: string | null
+          description?: string | null
+          job_link?: string
+          job_title?: string | null
+          location?: string | null
+          pay_scale_grade?: string | null
+          qualifications?: string | null
+          remote_status?: string | null
+          salary?: string | null
+        }
+        Update: {
+          date_closed?: string | null
+          date_posted?: string | null
+          description?: string | null
+          job_link?: string
+          job_title?: string | null
+          location?: string | null
+          pay_scale_grade?: string | null
+          qualifications?: string | null
+          remote_status?: string | null
+          salary?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
